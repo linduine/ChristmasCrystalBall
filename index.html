@@ -13,12 +13,14 @@
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 	<!-- Three JS-->
 	<script type="text/javascript" src="js/three.js"></script>
+	<script type="text/javascript" src="js/controls/TrackballControls.js"></script>
 </head>
 <body style="background-color: #000000">
 <h2 class="text-center">Christmas Crystal Ball</h2>
 <script>
 var scene = new THREE.Scene();
 var camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+scene.add(new THREE.AmbientLight(0x333333));
 var directionalLight = new THREE.DirectionalLight( 0xffffff, 0.9 );
 directionalLight.position.set( 0, 1, 1 );
 directionalLight.target.position.set( 75, window.innerWidth / window.innerHeight, 0.1 );;
@@ -26,21 +28,56 @@ scene.add( directionalLight );
 var renderer = new THREE.WebGLRenderer();
 renderer.setSize( window.innerWidth, window.innerHeight );
 document.body.appendChild( renderer.domElement );
-var geometry   = new THREE.SphereGeometry(2.5, 64, 64);
-var geometry2   = new THREE.SphereGeometry(.5, 64, 64);
+var geometry   = new THREE.SphereGeometry(2.5, 32, 32);
+//var geometry2   = new THREE.SphereGeometry(.5, 64, 64);
+//var geometry3 = new THREE.Geometry();
 var material  = new THREE.MeshPhongMaterial({color: 0xffffff, transparent: true, opacity: 0.5} );
-var material2  = new THREE.MeshBasicMaterial({color: 0xffff00} );
+//var material2  = new THREE.MeshBasicMaterial({color: 0xffff00} );
 var sphere = new THREE.Mesh( geometry, material );
-var sphere2 = new THREE.Mesh( geometry2, material2 );
-scene.add( sphere2 );
+//var sphere2 = new THREE.Mesh( geometry2, material2 );
+console.log(sphere);
+
+// create the particle variables
+var particleCount = 1800,
+    particles = new THREE.Geometry(),
+    pMaterial = new THREE.PointsMaterial({
+      color: 0xFFFFFF,
+      size: 0.01
+    });
+
+// now create the individual particles
+for (var p = 0; p < particleCount; p++) {
+
+  // create a particle with random
+  // position values, -250 -> 250
+  var theta = THREE.Math.randFloatSpread(360);
+  var phi = THREE.Math.randFloatSpread(360);
+  var pX = 2.49 * Math.sin(theta) * Math.cos(phi),
+      pY = 2.49 * Math.sin(theta) * Math.sin(phi),
+      pZ = 2.49 * Math.cos(theta),
+      particle = new THREE.Vector3(pX, pY, pZ);
+
+  // add it to the geometry
+  particles.vertices.push(particle);
+}
+
+// create the particle system
+var particleSystem = new THREE.ParticleSystem(
+    particles,
+    pMaterial);
+
+// add it to the scene
+scene.add( particleSystem );
+//scene.add( sphere2 );
 scene.add( sphere );
-
 camera.position.z = 5;
-
+var controls = new THREE.TrackballControls(camera);
 function render() {
+	controls.update();
+	//sphere.rotation.y += 0.01;
 	requestAnimationFrame( render );
 	renderer.render( scene, camera );
-//	sphere.rotation.y += 0.01;
+	//sphere.rotation.y += 0.01;
 	//sphere.rotation.y += 0.1;
 }
 render();
