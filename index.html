@@ -19,13 +19,16 @@
 <script>
 var scene = new THREE.Scene();
 var camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
-
+var directionalLight = new THREE.DirectionalLight( 0xffffff, 0.9 );
+directionalLight.position.set( 0, 1, 1 );
+directionalLight.target.position.set( 75, window.innerWidth / window.innerHeight, 0.1 );;
+scene.add( directionalLight );
 var renderer = new THREE.WebGLRenderer();
 renderer.setSize( window.innerWidth, window.innerHeight );
 document.body.appendChild( renderer.domElement );
 var geometry   = new THREE.SphereGeometry(2.5, 64, 64);
 var geometry2   = new THREE.SphereGeometry(.5, 64, 64);
-var material  = new THREE.MeshBasicMaterial({color: 0xffffff, transparent: true, opacity: 0.5} );
+var material  = new THREE.MeshPhongMaterial({color: 0xffffff, transparent: true, opacity: 0.5} );
 var material2  = new THREE.MeshBasicMaterial({color: 0xffff00} );
 var sphere = new THREE.Mesh( geometry, material );
 var sphere2 = new THREE.Mesh( geometry2, material2 );
@@ -37,7 +40,7 @@ camera.position.z = 5;
 function render() {
 	requestAnimationFrame( render );
 	renderer.render( scene, camera );
-	//sphere.rotation.x += 0.01;
+//	sphere.rotation.y += 0.01;
 	//sphere.rotation.y += 0.1;
 }
 render();
