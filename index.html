@@ -31,25 +31,26 @@ document.body.appendChild( renderer.domElement );
 var geometry   = new THREE.SphereGeometry(2.5, 32, 32);
 //var geometry2   = new THREE.SphereGeometry(.5, 64, 64);
 //var geometry3 = new THREE.Geometry();
-var material  = new THREE.MeshPhongMaterial({color: 0xffffff, transparent: true, opacity: 0.5} );
+var material  = new THREE.MeshPhongMaterial({color: 0xffffff, transparent: true, opacity: 0.2} );
 //var material2  = new THREE.MeshBasicMaterial({color: 0xffff00} );
 var sphere = new THREE.Mesh( geometry, material );
 //var sphere2 = new THREE.Mesh( geometry2, material2 );
-console.log(sphere);
-
+var clock;
+var deltaTime;
+clock = new THREE.Clock(true);
 // create the particle variables
 var particleCount = 1800,
     particles = new THREE.Geometry(),
     pMaterial = new THREE.PointsMaterial({
       color: 0xFFFFFF,
-      size: 0.01
+      size: 0.03
     });
 
 // now create the individual particles
 for (var p = 0; p < particleCount; p++) {
 
   // create a particle with random
-  // position values, -250 -> 250
+  // position values, -2.5-> 2.5
   var theta = THREE.Math.randFloatSpread(360);
   var phi = THREE.Math.randFloatSpread(360);
   var pX = 2.49 * Math.sin(theta) * Math.cos(phi),
@@ -62,7 +63,7 @@ for (var p = 0; p < particleCount; p++) {
 }
 
 // create the particle system
-var particleSystem = new THREE.ParticleSystem(
+var particleSystem = new THREE.Points(
     particles,
     pMaterial);
 
@@ -72,14 +73,36 @@ scene.add( particleSystem );
 scene.add( sphere );
 camera.position.z = 5;
 var controls = new THREE.TrackballControls(camera);
+
+function animateParticles() {
+    var verts = particleSystem.geometry.vertices;
+    theta = THREE.Math.randFloatSpread(360);
+    phi = THREE.Math.randFloatSpread(360);
+    for(var i = 0; i < verts.length; i++) {
+        var vert = verts[i];
+      //  if (vert.y < -200) {
+            vert.x = 2.49 * Math.sin(theta+100*deltaTime) * Math.cos(phi+100*deltaTime);
+            vert.y = 2.49 * Math.sin(theta+100*deltaTime) * Math.sin(phi+100*deltaTime);
+            vert.z = 2.49 * Math.cos(theta+100*deltaTime);
+        //}
+       // vert.y = vert.y - 10;
+    }
+    particleSystem.geometry.verticesNeedUpdate = true;
+     
+}
+
 function render() {
 	controls.update();
+	deltaTime = clock.getDelta();
+	animateParticles();
 	//sphere.rotation.y += 0.01;
+	//particleSystem.y += 0.01;
 	requestAnimationFrame( render );
 	renderer.render( scene, camera );
 	//sphere.rotation.y += 0.01;
 	//sphere.rotation.y += 0.1;
 }
+
 render();
 </script>
 </body>
