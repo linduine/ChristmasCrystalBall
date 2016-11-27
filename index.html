@@ -5,9 +5,7 @@
 	<title>Christmas Crystal Ball</title>
 	<!-- Latest compiled and minified CSS -->
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-
-	<!-- Optional theme -->
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+	<link rel="stylesheet" href="assets/stylesheet.css">
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 	<!-- Latest compiled and minified JavaScript -->
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
@@ -15,8 +13,14 @@
 	<script type="text/javascript" src="js/three.js"></script>
 	<script type="text/javascript" src="js/controls/TrackballControls.js"></script>
 </head>
-<body style="background-color: #000000">
-<h2 class="text-center">Christmas Crystal Ball</h2>
+<body>
+<div class="row">
+  <div class="col-xs-offset-2 col-xs-8  ribbon">
+  <div class="ribbon-stitches-top"></div>
+<div class="ribbon-content"><h1><b>Christmas Crystal Ball</b></h1></div>
+<div class="ribbon-stitches-bottom"></div>
+  </div>
+</div>
 <script>
 var scene = new THREE.Scene();
 var camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
@@ -25,7 +29,7 @@ var directionalLight = new THREE.DirectionalLight( 0xffffff, 0.9 );
 directionalLight.position.set( 0, 1, 1 );
 directionalLight.target.position.set( 75, window.innerWidth / window.innerHeight, 0.1 );;
 scene.add( directionalLight );
-var renderer = new THREE.WebGLRenderer();
+var renderer = new THREE.WebGLRenderer({ alpha: true }); //so the scene background is completely transparent
 renderer.setSize( window.innerWidth, window.innerHeight );
 document.body.appendChild( renderer.domElement );
 var geometry   = new THREE.SphereGeometry(2.5, 32, 32);
@@ -39,7 +43,7 @@ var clock;
 var deltaTime;
 clock = new THREE.Clock(true);
 // create the particle variables
-var particleCount = 1800,
+var particleCount = 4800,
     particles = new THREE.Geometry(),
     pMaterial = new THREE.PointsMaterial({
       color: 0xFFFFFF,
@@ -53,9 +57,9 @@ for (var p = 0; p < particleCount; p++) {
   // position values, -2.5-> 2.5
   var theta = THREE.Math.randFloatSpread(360);
   var phi = THREE.Math.randFloatSpread(360);
-  var pX = 2.49 * Math.sin(theta) * Math.cos(phi),
-      pY = 2.49 * Math.sin(theta) * Math.sin(phi),
-      pZ = 2.49 * Math.cos(theta),
+  var pX = 1.32 * Math.sin(theta) * Math.cos(phi),
+      pY = -2.49 + 0.22*Math.sin(theta) * Math.sin(phi),
+      pZ = 0.05 * Math.cos(theta),
       particle = new THREE.Vector3(pX, pY, pZ);
 
   // add it to the geometry
@@ -78,7 +82,7 @@ function animateParticles() {
     var verts = particleSystem.geometry.vertices;
     theta = THREE.Math.randFloatSpread(360);
     phi = THREE.Math.randFloatSpread(360);
-    for(var i = 0; i < verts.length; i++) {
+   /* for(var i = 0; i < verts.length; i++) {
         var vert = verts[i];
       //  if (vert.y < -200) {
             vert.x = 2.49 * Math.sin(theta+100*deltaTime) * Math.cos(phi+100*deltaTime);
@@ -86,8 +90,8 @@ function animateParticles() {
             vert.z = 2.49 * Math.cos(theta+100*deltaTime);
         //}
        // vert.y = vert.y - 10;
-    }
-    particleSystem.geometry.verticesNeedUpdate = true;
+    }*/
+   // particleSystem.geometry.verticesNeedUpdate = true;
      
 }
 
